@@ -1,0 +1,9 @@
+[Desktop Entry]
+Name=HeidiSQL
+Comment=SQL database client
+Exec=heidisql
+Icon=heidisql
+Terminal=false
+Type=Application
+Categories=Development;Database;
+StartupNotify=true
