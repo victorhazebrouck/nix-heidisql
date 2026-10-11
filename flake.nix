@@ -46,7 +46,7 @@
         };
         config = lib.mkIf config.programs.heidisql.enable {
           home.packages = [
-            mkHeidisql { extraPackages = config.programs.heidisql.extraPackages; }
+            (mkHeidisql { extraPackages = config.programs.heidisql.extraPackages; })
           ];
         };
       };
