@@ -17,7 +17,10 @@
           kdePackages.libqtpas
           libX11
         ] ++ extraPackages;
-        runScript = "${heidisqlSource}/heidisql";
+        runScript = pkgs.writeShellScript "heidisql-wrapper" ''
+            ldconfig || true
+            exec ${heidisqlSource}/heidisql "$@"
+        '';
         extraInstallCommands = ''
           install -Dm644 ${./heidisql.desktop} $out/share/applications/heidisql.desktop
           install -Dm644 ${heidisqlSource}/heidisql.png $out/share/icons/hicolor/256x256/apps/heidisql.png
