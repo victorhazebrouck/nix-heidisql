@@ -1,15 +1,10 @@
 {
   description = "heidisql";
 
-  inputs = {
-    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
-  };
+  inputs = { };
 
   outputs = { self }:
     let
-      # system = "x86_64-linux";
-      # pkgs = import nixpkgs { inherit system; };
-
       heidisqlSource = fetchTarball {
         url = "https://github.com/HeidiSQL/HeidiSQL/releases/download/v12.21/build-qt6-v12.21.tgz";
         sha256 = "sha256:01yz8yar20l9rpvi3v987lv77zn07j36yy7ybkyiiyzb4dk2i54i";
@@ -33,8 +28,9 @@
           platforms = [ "x86_64-linux" ];
         };
       };
-
-      heidisqlHomeManager = { config, lib, pkgs, ... }: {
+    in
+    {
+      homeManagerModules.default = { config, lib, pkgs, ... }: {
         options.programs.heidisql = {
           enable = lib.mkEnableOption "heidisql";
           extraPackages = lib.mkOption {
@@ -44,15 +40,12 @@
             description = "DB drivers shared libraries";
           };
         };
+
         config = lib.mkIf config.programs.heidisql.enable {
           home.packages = [
             (mkHeidisql pkgs { extraPackages = config.programs.heidisql.extraPackages; })
           ];
         };
       };
-    in
-    {
-      # packages.${system}.default = mkHeidisql pkgs { extraPackages = [ pkgs.postgresql ]; };
-      homeManagerModules.default = heidisqlHomeManager;
     };
 }
