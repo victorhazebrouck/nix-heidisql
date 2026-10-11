@@ -2,22 +2,22 @@
   description = "heidisql";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
+    # nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
   };
 
-  outputs = { self, nixpkgs }:
+  outputs = { self }:
     let
-      system = "x86_64-linux";
-      pkgs = import nixpkgs { inherit system; };
+      # system = "x86_64-linux";
+      # pkgs = import nixpkgs { inherit system; };
 
       heidisqlSource = fetchTarball {
         url = "https://github.com/HeidiSQL/HeidiSQL/releases/download/v12.21/build-qt6-v12.21.tgz";
         sha256 = "sha256:01yz8yar20l9rpvi3v987lv77zn07j36yy7ybkyiiyzb4dk2i54i";
       };
 
-      mkHeidisql = { extraPackages ? [] }: pkgs.buildFHSEnv {
+      mkHeidisql = pkgs: { extraPackages ? [] }: pkgs.buildFHSEnv {
         name = "heidisql";
-        targetPkgs = pkgs: with pkgs; [
+        targetPkgs = p: with p; [
           qt6.qtbase
           kdePackages.libqtpas
           libX11
@@ -46,13 +46,13 @@
         };
         config = lib.mkIf config.programs.heidisql.enable {
           home.packages = [
-            (mkHeidisql { extraPackages = config.programs.heidisql.extraPackages; })
+            (mkHeidisql pkgs { extraPackages = config.programs.heidisql.extraPackages; })
           ];
         };
       };
     in
     {
-      packages.${system}.default = mkHeidisql { extraPackages = [ pkgs.postgresql ]; };
+      # packages.${system}.default = mkHeidisql pkgs { extraPackages = [ pkgs.postgresql ]; };
       homeManagerModules.default = heidisqlHomeManager;
     };
 }
